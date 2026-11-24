@@ -72,7 +72,8 @@ d.ellipse([LX+555, 173, LX+565, 183], fill=(250, 204, 21))
 d.text((LX+LW-16, 238), "+31%", font=font(SANS_B, 22), fill=(250, 204, 21), anchor="ra")
 d.text((LX, 280), "TECH  •  MARKETS  —  LEAD STORY", font=font(SANS_B, 11), fill=GREEN)
 yy = draw_lines(d, wrap(d, "Nvidia brings back Huang as chief", font(SERIF_B, 38), LW), LX, 298, font(SERIF_B, 38), INK, 44)
-draw_lines(d, wrap(d, "Shares jump 31% in a day and the S&P 500 rises 4.73% after Donald Trump presses the board to reinstate Jensen Huang, less than two weeks after he resigned.", font(SERIF, 15), LW), LX, yy+6, font(SERIF, 15), MUTED, 20)
+d.text((LX, yy+4), "By The World Today Staff  •  SANTA CLARA, Calif.", font=font(SANS_B, 11), fill=INK)
+draw_lines(d, wrap(d, "Shares jump 31% in a day and the S&P 500 rises 4.73% after Donald Trump presses the board to reinstate Jensen Huang, less than two weeks after he resigned.", font(SERIF, 15), LW), LX, yy+24, font(SERIF, 15), MUTED, 20)
 
 # secondary, right column, each 150px tall
 RX, RW = 652, 336
@@ -93,22 +94,22 @@ def vis_gaza(x, y, w):
         d.rectangle([bx, y+48-bh, bx+40, y+48], fill=(124, 29, 29))
 
 secondary(158, BLUE, "CONFLICT  •  LIBYA", "Ukraine sinks Russian warship off Libya",
-          "Seven naval drones hit the corvette Merkury at Benghazi. The UN calls for a probe.", vis_ship)
+          "BENGHAZI, Libya — Seven naval drones hit the corvette Merkury. The UN calls for a probe.", vis_ship)
 secondary(318, RED, "GAZA", "Israeli strikes kill Hamas security chief",
-          "Naeem Abu Nahel among 7 killed. A UNRWA worker died a day earlier.", vis_gaza)
+          "GAZA CITY — Naeem Abu Nahel among 7 killed. A UNRWA worker died a day earlier.", vis_gaza)
 
 # 3 columns, 9 stories
 d.line([(36, 486), (988, 486)], fill=INK, width=2)
 cols = [
-    [("IRAN  •  GULF", TEAL, "US blockade, Hormuz mines", "Iran vows to confront the blockade. Three tankers hit mines."),
-     ("ROHINGYA  •  ICJ", RED, "14 nations back genocide ruling", "UK sanctions five Myanmar generals after the ruling."),
-     ("NATO  •  SPACE", BLUE, "NATO vows to defend space", "Russia may put a nuclear weapon in orbit.")],
-    [("AI", PURPLE, "UN wants global AI rules in a year", "US states sue over Grok images; Korea pays to catch cheating."),
-     ("CLIMATE  •  COP31", GREEN, "Climate summit ends with no deal", "Talks fail over fossil fuels and finance."),
-     ("INDONESIA", GOLD, "Factory fire in Banten kills 26", "Dozens missing after a fire at a factory in Banten.")],
-    [("NEPAL", TEAL, "Nepal quake, 5.6 near China", "Tremor felt near the China border."),
-     ("SPACE", TEAL, "Pakistan astronaut for Tiangong", "Zeeshan Ali, first foreign astronaut on the station."),
-     ("USA", RED, "Democrats take US House", "The party wins by its largest margin in decades.")],
+    [("IRAN  •  GULF", TEAL, "US blockade, Hormuz mines", "WASHINGTON — Iran vows to confront the blockade. Three tankers hit mines."),
+     ("ROHINGYA  •  ICJ", RED, "14 nations back genocide ruling", "THE HAGUE — UK sanctions five Myanmar generals after the ruling."),
+     ("NATO  •  SPACE", BLUE, "NATO vows to defend space", "BRUSSELS — Russia may put a nuclear weapon in orbit.")],
+    [("AI", PURPLE, "UN wants global AI rules in a year", "NEW YORK — US states sue over Grok images; Korea pays to catch cheating."),
+     ("CLIMATE  •  COP31", GREEN, "Climate summit ends with no deal", "ANTALYA — Talks fail over fossil fuels and finance."),
+     ("INDONESIA", GOLD, "Factory fire in Banten kills 26", "BANTEN — Dozens missing after a fire at a factory.")],
+    [("NEPAL", TEAL, "Nepal quake, 5.6 near China", "KATHMANDU — Tremor felt near the China border."),
+     ("SPACE", TEAL, "Pakistan astronaut for Tiangong", "ISLAMABAD — Zeeshan Ali, first foreign astronaut on the station."),
+     ("USA", RED, "Democrats take US House", "WASHINGTON — The party wins by its largest margin in decades.")],
 ]
 for ci, col in enumerate(cols):
     x = 36 + ci * 324
