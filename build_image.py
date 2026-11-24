@@ -68,19 +68,29 @@ def panel(x, y, w, h, kicker, kcolor, headline, sub, accent):
     d.line([(x+14, y+h-14), (x+w-14, y+h-14)], fill=accent, width=4)
 
 # lead row
-panel(36, 156, 466, 252, "TECH  •  MARKETS", GREEN,
+panel(36, 156, 466, 272, "TECH  •  MARKETS", GREEN,
       "Nvidia brings back Huang",
       "Shares jump 31% in a day. S&P 500 +4.73% after Trump pressure.", GREEN)
 
-panel(522, 156, 466, 252, "CONFLICT  •  LIBYA", BLUE,
+panel(522, 156, 466, 272, "CONFLICT  •  LIBYA", BLUE,
       "Ukraine sinks Russian warship off Libya",
-      "Seven naval drones hit the corvette Merkury at Benghazi. The UN calls for an independent probe.", BLUE)
+      "Seven naval drones hit the corvette Merkury at Benghazi. UN calls for a probe.", BLUE)
+
+# visuals in the empty strip at the bottom of the lead panels (below the text)
+# Nvidia: rising chart, +31% label
+d.line([(60, 405), (130, 395), (200, 400), (270, 375), (340, 380), (410, 350), (470, 335)], fill=GREEN, width=5, joint="curve")
+for (px, py) in [(60, 405), (200, 400), (340, 380), (470, 335)]:
+    d.ellipse([px-5, py-5, px+5, py+5], fill=GREEN)
+d.text((60, 342), "+31% in a day", font=font(SANS_B, 18), fill=GREEN, anchor="la")
+# Libya: ship silhouette on waves
+d.rectangle([618, 348, 642, 382], fill=BLUE)
+d.polygon([(560, 382), (700, 382), (672, 406), (588, 406)], fill=BLUE)
 
 # second row
-panel(36, 428, 466, 196, "GAZA", RED,
+panel(36, 448, 466, 196, "GAZA", RED,
       "Israeli strikes kill Hamas security chief in Gaza",
       "Naeem Abu Nahel among 7 killed. A UNRWA worker was killed a day earlier.", RED)
-panel(522, 428, 466, 196, "IRAN  •  GULF", TEAL,
+panel(522, 448, 466, 196, "IRAN  •  GULF", TEAL,
       "US blockade, Hormuz mines",
       "Iran vows to confront the blockade. Three tankers hit mines in Hormuz.", TEAL)
 
@@ -96,15 +106,16 @@ cards = [
 cw, ch, gap = 304, 138, 16
 for i, (kick, head, sub, col) in enumerate(cards):
     x = 36 + (i % 3) * (cw + gap)
-    y = 644 + (i // 3) * (ch + gap)
+    y = 664 + (i // 3) * (ch + gap)
     d.rounded_rectangle([x, y, x+cw, y+ch], radius=8, fill=CARD, outline=LINE, width=2)
     d.text((x+12, y+10), kick, font=font(SANS_B, 13), fill=col)
     yy = draw_lines(d, wrap(d, head, font(SERIF_B, 19), cw-24), x+12, y+34, font(SERIF_B, 19), INK, 23)
     draw_lines(d, wrap(d, sub, font(SANS, 14), cw-24), x+12, yy+4, font(SANS, 14), MUTED, 18)
+    d.line([(x+12, y+ch-12), (x+cw-12, y+ch-12)], fill=col, width=3)
 
 # footer
-d.line([(48, 952), (976, 952)], fill=LINE, width=2)
-d.text((512, 964), "24 NOVEMBER 2026  —  NVIDIA  •  UKRAINE  •  GAZA  •  IRAN  •  ROHINGYA  •  AI  •  CLIMATE", font=font(SANS_B, 14), fill=MUTED, anchor="ma")
+d.line([(48, 968), (976, 968)], fill=LINE, width=2)
+d.text((512, 980), "24 NOVEMBER 2026  —  NVIDIA  •  UKRAINE  •  GAZA  •  IRAN  •  ROHINGYA  •  AI  •  CLIMATE", font=font(SANS_B, 14), fill=MUTED, anchor="ma")
 
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "entry.png")
 img.save(out, "PNG", optimize=True)
