@@ -1,7 +1,7 @@
-"""Build entry.png v6 (1024x1024) for news-image-20261124.
-35 stories as a numbered 5x7 tile grid. Each story gets its own tile,
-headline-only at 16pt serif — no dense 14pt strip, no subtext to shrink.
-At full 1024 every tile is legible; the grid itself shows the count.
+"""Build entry.png v7 (1024x1024) for news-image-20261124.
+Pretty redesign of the v6 grid: hero visual band with the 4 lead
+stories drawn as icons, then the same 35 numbered tiles, polished
+with soft shadows, filled number badges and a coloured left border.
 Deterministic: fixed date, fixed text, no network, no random.
 """
 from PIL import Image, ImageDraw, ImageFont
@@ -12,15 +12,19 @@ PAPER = (247, 242, 232)
 INK = (17, 17, 17)
 CARD = (255, 255, 255)
 LINE = (210, 200, 182)
+SHADOW = (225, 216, 198)
 RED = (180, 35, 24)
 BLUE = (27, 79, 114)
 TEAL = (14, 116, 109)
 GREEN = (22, 101, 52)
 GOLD = (146, 96, 0)
 PURPLE = (90, 40, 140)
+NAVY = (13, 32, 54)
 
 SERIF_B = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"
+SERIF = "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"
 SANS_B = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+SANS = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 
 def font(path, size):
     return ImageFont.truetype(path, size)
@@ -43,9 +47,32 @@ img = Image.new("RGB", (W, H), PAPER)
 d = ImageDraw.Draw(img)
 d.rectangle([18, 18, W-19, H-19], outline=INK, width=3)
 d.rectangle([24, 24, W-25, H-25], outline=LINE, width=1)
-d.text((512, 38), "THE DAY IN ONE IMAGE", font=font(SERIF_B, 52), fill=INK, anchor="ma")
-d.text((512, 102), "TUESDAY  •  24 NOVEMBER 2026  •  35 STORIES", font=font(SANS_B, 19), fill=RED, anchor="ma")
-d.line([(48, 138), (976, 138)], fill=RED, width=4)
+
+# masthead
+d.text((512, 34), "THE DAY IN ONE IMAGE", font=font(SERIF_B, 48), fill=INK, anchor="ma")
+d.text((512, 96), "TUESDAY  •  24 NOVEMBER 2026  •  35 STORIES", font=font(SANS_B, 18), fill=RED, anchor="ma")
+d.line([(48, 130), (976, 130)], fill=GOLD, width=2)
+d.line([(48, 135), (976, 135)], fill=RED, width=4)
+
+# hero visual band: 4 lead stories as icons on navy
+d.rounded_rectangle([36, 148, 988, 232], radius=12, fill=NAVY)
+# 1 chip (Nvidia)
+d.rounded_rectangle([86, 168, 146, 200], radius=6, fill=(34, 197, 94), outline=(255, 255, 255), width=2)
+d.rounded_rectangle([104, 178, 128, 190], radius=3, fill=NAVY, outline=(255, 255, 255), width=2)
+d.text((116, 208), "NVIDIA  +31%", font=font(SANS_B, 12), fill=(250, 204, 21), anchor="ma")
+# 2 ship (Libya)
+d.polygon([(300, 192), (400, 192), (380, 206), (320, 206)], fill=(255, 255, 255))
+d.rectangle([344, 168, 352, 192], fill=(255, 255, 255))
+d.polygon([(352, 168), (380, 178), (352, 186)], fill=(239, 68, 68))
+d.text((350, 208), "LIBYA", font=font(SANS_B, 12), fill=(255, 255, 255), anchor="ma")
+# 3 buildings (Gaza)
+for bx, bh in ((540, 22), (575, 32), (612, 18), (650, 28)):
+    d.rectangle([bx, 204-bh, bx+28, 204], fill=(239, 68, 68))
+d.text((606, 208), "GAZA", font=font(SANS_B, 12), fill=(255, 255, 255), anchor="ma")
+# 4 tanker (Hormuz)
+d.polygon([(790, 182), (890, 182), (872, 200), (808, 200)], fill=(255, 255, 255))
+d.rectangle([828, 168, 852, 182], fill=(255, 255, 255))
+d.text((840, 208), "HORMUZ", font=font(SANS_B, 12), fill=(255, 255, 255), anchor="ma")
 
 stories = [
     ("TECH", GREEN, "Nvidia brings back Huang"),
@@ -85,18 +112,20 @@ stories = [
     ("COLOMBIA", GOLD, "Car bomb in Villavicencio"),
 ]
 
-cw, ch, gx, gy = 184, 112, 8, 8
+cw, ch, gx, gy = 184, 100, 8, 6
 for i, (tag, col, head) in enumerate(stories):
     x = 36 + (i % 5) * (cw + gx)
-    y = 156 + (i // 5) * (ch + gy)
+    y = 248 + (i // 5) * (ch + gy)
+    d.rounded_rectangle([x+3, y+3, x+cw+3, y+ch+3], radius=8, fill=SHADOW)
     d.rounded_rectangle([x, y, x+cw, y+ch], radius=8, fill=CARD, outline=LINE, width=2)
-    d.line([(x+10, y+6), (x+cw-10, y+6)], fill=col, width=4)
-    d.text((x+10, y+14), f"{i+1:02d}", font=font(SANS_B, 13), fill=col)
-    d.text((x+cw-10, y+14), tag, font=font(SANS_B, 11), fill=col, anchor="ra")
-    yy = y + 36
-    for ln in wrap(d, head, font(SERIF_B, 16), cw-20):
-        d.text((x+10, yy), ln, font=font(SERIF_B, 16), fill=INK)
-        yy += 20
+    d.rectangle([x, y+8, x+5, y+ch-8], fill=col)
+    d.ellipse([x+14, y+12, x+38, y+36], fill=col)
+    d.text((x+26, y+15), f"{i+1}", font=font(SANS_B, 13), fill=(255, 255, 255), anchor="ma")
+    d.text((x+cw-10, y+16), tag, font=font(SANS_B, 11), fill=col, anchor="ra")
+    yy = y + 42
+    for ln in wrap(d, head, font(SERIF_B, 16), cw-22):
+        d.text((x+12, yy), ln, font=font(SERIF_B, 16), fill=INK)
+        yy += 19
 
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "entry.png")
 img.save(out, "PNG", optimize=True)
