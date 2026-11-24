@@ -1,25 +1,24 @@
-"""Build entry.png v7 (1024x1024) for news-image-20261124.
-Pretty redesign of the v6 grid: hero visual band with the 4 lead
-stories drawn as icons, then the same 35 numbered tiles, polished
-with soft shadows, filled number badges and a coloured left border.
-Deterministic: fixed date, fixed text, no network, no random.
+"""Build entry.png v8.1 (1024x1024) for news-image-20261124.
+International broadsheet front page, layout fixed with measured heights:
+  masthead 30-146, lead+secondary 158-470, 3 columns 486-750, IN BRIEF 766-962.
+  1 lead + 2 secondary + 9 column stories + 23 brief = 35 stories.
+Deterministic: fixed date, fixed text, no network.
 """
 from PIL import Image, ImageDraw, ImageFont
 import os
 
 W, H = 1024, 1024
-PAPER = (247, 242, 232)
+PAPER = (250, 248, 243)
 INK = (17, 17, 17)
-CARD = (255, 255, 255)
-LINE = (210, 200, 182)
-SHADOW = (225, 216, 198)
-RED = (180, 35, 24)
+MUTED = (80, 76, 68)
+RED = (160, 30, 20)
 BLUE = (27, 79, 114)
 TEAL = (14, 116, 109)
 GREEN = (22, 101, 52)
 GOLD = (146, 96, 0)
 PURPLE = (90, 40, 140)
 NAVY = (13, 32, 54)
+RULE = (190, 182, 166)
 
 SERIF_B = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"
 SERIF = "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"
@@ -43,89 +42,102 @@ def wrap(draw, text, fnt, max_w):
         lines.append(cur)
     return lines
 
+def draw_lines(draw, lines, x, y, fnt, fill, lh):
+    for ln in lines:
+        draw.text((x, y), ln, font=fnt, fill=fill)
+        y += lh
+    return y
+
 img = Image.new("RGB", (W, H), PAPER)
 d = ImageDraw.Draw(img)
 d.rectangle([18, 18, W-19, H-19], outline=INK, width=3)
-d.rectangle([24, 24, W-25, H-25], outline=LINE, width=1)
 
 # masthead
-d.text((512, 34), "THE DAY IN ONE IMAGE", font=font(SERIF_B, 48), fill=INK, anchor="ma")
-d.text((512, 96), "TUESDAY  •  24 NOVEMBER 2026  •  35 STORIES", font=font(SANS_B, 18), fill=RED, anchor="ma")
-d.line([(48, 130), (976, 130)], fill=GOLD, width=2)
-d.line([(48, 135), (976, 135)], fill=RED, width=4)
+d.line([(36, 30), (988, 30)], fill=INK, width=2)
+d.text((36, 40), "TUESDAY, 24 NOVEMBER 2026", font=font(SANS_B, 12), fill=INK)
+d.text((988, 40), "35 STORIES  •  WORLD EDITION", font=font(SANS_B, 12), fill=INK, anchor="ra")
+d.text((512, 52), "THE WORLD TODAY", font=font(SERIF_B, 56), fill=INK, anchor="ma")
+d.text((512, 118), "The day's news, in one image", font=font(SERIF, 16), fill=MUTED, anchor="ma")
+d.line([(36, 142), (988, 142)], fill=INK, width=3)
+d.line([(36, 146), (988, 146)], fill=INK, width=1)
 
-# hero visual band: 4 lead stories as icons on navy
-d.rounded_rectangle([36, 148, 988, 232], radius=12, fill=NAVY)
-# 1 chip (Nvidia)
-d.rounded_rectangle([86, 168, 146, 200], radius=6, fill=(34, 197, 94), outline=(255, 255, 255), width=2)
-d.rounded_rectangle([104, 178, 128, 190], radius=3, fill=NAVY, outline=(255, 255, 255), width=2)
-d.text((116, 208), "NVIDIA  +31%", font=font(SANS_B, 12), fill=(250, 204, 21), anchor="ma")
-# 2 ship (Libya)
-d.polygon([(300, 192), (400, 192), (380, 206), (320, 206)], fill=(255, 255, 255))
-d.rectangle([344, 168, 352, 192], fill=(255, 255, 255))
-d.polygon([(352, 168), (380, 178), (352, 186)], fill=(239, 68, 68))
-d.text((350, 208), "LIBYA", font=font(SANS_B, 12), fill=(255, 255, 255), anchor="ma")
-# 3 buildings (Gaza)
-for bx, bh in ((540, 22), (575, 32), (612, 18), (650, 28)):
-    d.rectangle([bx, 204-bh, bx+28, 204], fill=(239, 68, 68))
-d.text((606, 208), "GAZA", font=font(SANS_B, 12), fill=(255, 255, 255), anchor="ma")
-# 4 tanker (Hormuz)
-d.polygon([(790, 182), (890, 182), (872, 200), (808, 200)], fill=(255, 255, 255))
-d.rectangle([828, 168, 852, 182], fill=(255, 255, 255))
-d.text((840, 208), "HORMUZ", font=font(SANS_B, 12), fill=(255, 255, 255), anchor="ma")
+# lead: Nvidia
+LX, LW = 36, 600
+d.rounded_rectangle([LX, 158, LX+LW, 268], radius=8, fill=NAVY)
+d.rounded_rectangle([LX+30, 178, LX+130, 238], radius=8, fill=(34, 197, 94), outline=(255, 255, 255), width=3)
+d.rounded_rectangle([LX+62, 192, LX+98, 224], radius=4, fill=NAVY, outline=(255, 255, 255), width=2)
+pts = [(LX+170, 238), (LX+260, 224), (LX+350, 230), (LX+450, 198), (LX+560, 178)]
+d.line(pts, fill=(255, 255, 255), width=5, joint="curve")
+d.ellipse([LX+555, 173, LX+565, 183], fill=(250, 204, 21))
+d.text((LX+LW-16, 238), "+31%", font=font(SANS_B, 22), fill=(250, 204, 21), anchor="ra")
+d.text((LX, 280), "TECH  •  MARKETS  —  LEAD STORY", font=font(SANS_B, 11), fill=GREEN)
+yy = draw_lines(d, wrap(d, "Nvidia brings back Huang as chief", font(SERIF_B, 38), LW), LX, 298, font(SERIF_B, 38), INK, 44)
+draw_lines(d, wrap(d, "Shares jump 31% in a day and the S&P 500 rises 4.73% after Donald Trump presses the board to reinstate Jensen Huang, less than two weeks after he resigned.", font(SERIF, 15), LW), LX, yy+6, font(SERIF, 15), MUTED, 20)
 
-stories = [
-    ("TECH", GREEN, "Nvidia brings back Huang"),
-    ("CONFLICT", BLUE, "Ukraine sinks Russian warship off Libya"),
-    ("GAZA", RED, "Gaza strikes kill Hamas chief"),
-    ("IRAN", TEAL, "US blockade, Hormuz mines"),
-    ("ICJ", RED, "Rohingya genocide ruling backed"),
-    ("SPACE", BLUE, "NATO vows to defend space"),
-    ("AI", PURPLE, "UN wants global AI rules"),
-    ("CLIMATE", GREEN, "COP31 ends with no deal"),
-    ("INDONESIA", GOLD, "Banten factory fire kills 26"),
-    ("WORLD", TEAL, "Nepal quake, 5.6 near China"),
-    ("SPACE", TEAL, "Pakistan astronaut for Tiangong"),
-    ("USA", RED, "Democrats take US House"),
-    ("WAR", BLUE, "Zaporizhzhia hit: 2 killed"),
-    ("WAR", BLUE, "Russian deaths pass 700,000"),
-    ("WAR", BLUE, "Russia warns Estonia"),
-    ("DIPLOMACY", TEAL, "Qatar PM meets Vance, Rubio"),
-    ("LIBYA", BLUE, "Libya demands Kyiv explain"),
-    ("GAZA", RED, "Oxfam: Gaza 'toxic land'"),
-    ("GAZA", RED, "UN: Gaza war undone 77 years"),
-    ("IRAN", TEAL, "UK logs Iranian attacks"),
-    ("WAR", BLUE, "Germany gets Delta access"),
-    ("AFRICA", GOLD, "Congo Ebola teams trapped"),
-    ("EU", BLUE, "EU limits Russian visas"),
-    ("IRAQ", GOLD, "Iraq orders oilfields control"),
-    ("TECH", GREEN, "US blacklists Megaspeed"),
-    ("USA", RED, "Pentagon accuses Canada"),
-    ("USA", RED, "Trump death penalty order"),
-    ("HEALTH", PURPLE, "US loses measles status"),
-    ("BUSINESS", GREEN, "Sanofi buys Insmed $41B"),
-    ("AFRICA", GOLD, "Somalia, Uganda hit Al-Shabaab"),
-    ("YEMEN", RED, "Houthis: Saudi strike kills 17"),
-    ("WAR", BLUE, "Zelensky urges NATO admission"),
-    ("EU", BLUE, "Spain amnesties Puigdemont"),
-    ("MEXICO", GOLD, "Mexico to try 'El Chapo Isidro'"),
-    ("COLOMBIA", GOLD, "Car bomb in Villavicencio"),
+# secondary, right column, each 150px tall
+RX, RW = 652, 336
+def secondary(y, col, kick, head, sub, visual):
+    d.line([(RX, y), (RX+RW, y)], fill=RULE, width=1)
+    visual(RX, y+6, RW)
+    d.text((RX, y+58), kick, font=font(SANS_B, 11), fill=col)
+    yy = draw_lines(d, wrap(d, head, font(SERIF_B, 21), RW), RX, y+74, font(SERIF_B, 21), INK, 25)
+    draw_lines(d, wrap(d, sub, font(SERIF, 13), RW), RX, yy+3, font(SERIF, 13), MUTED, 17)
+
+def vis_ship(x, y, w):
+    d.polygon([(x+60, y+28), (x+220, y+28), (x+195, y+48), (x+85, y+48)], fill=BLUE)
+    d.rectangle([x+130, y+6, x+140, y+28], fill=BLUE)
+    d.polygon([(x+140, y+6), (x+172, y+18), (x+140, y+26)], fill=RED)
+
+def vis_gaza(x, y, w):
+    for bx, bh in ((x+20, 20), (x+70, 30), (x+122, 16), (x+176, 26), (x+232, 22)):
+        d.rectangle([bx, y+48-bh, bx+40, y+48], fill=(124, 29, 29))
+
+secondary(158, BLUE, "CONFLICT  •  LIBYA", "Ukraine sinks Russian warship off Libya",
+          "Seven naval drones hit the corvette Merkury at Benghazi. The UN calls for a probe.", vis_ship)
+secondary(318, RED, "GAZA", "Israeli strikes kill Hamas security chief",
+          "Naeem Abu Nahel among 7 killed. A UNRWA worker died a day earlier.", vis_gaza)
+
+# 3 columns, 9 stories
+d.line([(36, 486), (988, 486)], fill=INK, width=2)
+cols = [
+    [("IRAN  •  GULF", TEAL, "US blockade, Hormuz mines", "Iran vows to confront the blockade. Three tankers hit mines."),
+     ("ROHINGYA  •  ICJ", RED, "14 nations back genocide ruling", "UK sanctions five Myanmar generals after the ruling."),
+     ("NATO  •  SPACE", BLUE, "NATO vows to defend space", "Russia may put a nuclear weapon in orbit.")],
+    [("AI", PURPLE, "UN wants global AI rules in a year", "US states sue over Grok images; Korea pays to catch cheating."),
+     ("CLIMATE  •  COP31", GREEN, "Climate summit ends with no deal", "Talks fail over fossil fuels and finance."),
+     ("INDONESIA", GOLD, "Factory fire in Banten kills 26", "Dozens missing after a fire at a factory in Banten.")],
+    [("NEPAL", TEAL, "Nepal quake, 5.6 near China", "Tremor felt near the China border."),
+     ("SPACE", TEAL, "Pakistan astronaut for Tiangong", "Zeeshan Ali, first foreign astronaut on the station."),
+     ("USA", RED, "Democrats take US House", "The party wins by its largest margin in decades.")],
 ]
+for ci, col in enumerate(cols):
+    x = 36 + ci * 324
+    if ci:
+        d.line([(x-12, 500), (x-12, 752)], fill=RULE, width=1)
+    y = 500
+    for kick, colr, head, sub in col:
+        d.text((x, y), kick, font=font(SANS_B, 11), fill=colr)
+        yy = draw_lines(d, wrap(d, head, font(SERIF_B, 15), 300), x, y+16, font(SERIF_B, 15), INK, 19)
+        y = draw_lines(d, wrap(d, sub, font(SERIF, 11), 300), x, yy+2, font(SERIF, 11), MUTED, 15) + 10
 
-cw, ch, gx, gy = 184, 100, 8, 6
-for i, (tag, col, head) in enumerate(stories):
-    x = 36 + (i % 5) * (cw + gx)
-    y = 248 + (i // 5) * (ch + gy)
-    d.rounded_rectangle([x+3, y+3, x+cw+3, y+ch+3], radius=8, fill=SHADOW)
-    d.rounded_rectangle([x, y, x+cw, y+ch], radius=8, fill=CARD, outline=LINE, width=2)
-    d.rectangle([x, y+8, x+5, y+ch-8], fill=col)
-    d.ellipse([x+14, y+12, x+38, y+36], fill=col)
-    d.text((x+26, y+15), f"{i+1}", font=font(SANS_B, 13), fill=(255, 255, 255), anchor="ma")
-    d.text((x+cw-10, y+16), tag, font=font(SANS_B, 11), fill=col, anchor="ra")
-    yy = y + 42
-    for ln in wrap(d, head, font(SERIF_B, 16), cw-22):
-        d.text((x+12, yy), ln, font=font(SERIF_B, 16), fill=INK)
-        yy += 19
+# IN BRIEF: remaining 23 stories
+d.line([(36, 766), (988, 766)], fill=INK, width=2)
+d.text((36, 778), "IN BRIEF", font=font(SANS_B, 14), fill=RED)
+d.text((988, 778), "23 MORE STORIES", font=font(SANS_B, 12), fill=MUTED, anchor="ra")
+brief = [
+    "Zaporizhzhia hit: 2 killed, 40 hurt", "Russian deaths pass 700,000", "Russia warns Estonia",
+    "Qatar PM meets Vance, Rubio", "Libya demands Kyiv explain", "Oxfam: Gaza 'toxic land'",
+    "UN: Gaza war undone 77 years", "UK logs Iranian attacks", "Germany gets Delta access",
+    "Congo Ebola teams trapped", "EU limits Russian visas", "Iraq orders oilfields control",
+    "US blacklists Megaspeed", "Pentagon accuses Canada", "Trump death penalty order",
+    "US loses measles status", "Sanofi buys Insmed $41B", "Somalia, Uganda hit Al-Shabaab",
+    "Houthis: Saudi strike kills 17", "Zelensky urges NATO admission", "Spain amnesties Puigdemont",
+    "Mexico to try 'El Chapo Isidro'", "Car bomb in Villavicencio",
+]
+for i, item in enumerate(brief):
+    x = 36 + (i % 3) * 324
+    y = 804 + (i // 3) * 20
+    d.text((x, y), "•  " + item, font=font(SANS, 13), fill=INK)
 
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "entry.png")
 img.save(out, "PNG", optimize=True)
