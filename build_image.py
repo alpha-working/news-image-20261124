@@ -69,7 +69,7 @@ def panel_visual(x, y, w, h, band_h, bg, kicker, headline, sub, accent, draw_vis
     d.line([(x+14, y+h-12), (x+w-14, y+h-12)], fill=accent, width=4)
 
 def vis_nvidia(x, y, w, band_h):
-    cx, cy = x+95, y+58
+    cx, cy = x+95, y+60
     d.rounded_rectangle([cx-46, cy-24, cx+46, cy+24], radius=8, fill=(34, 197, 94), outline=(255, 255, 255), width=3)
     d.rounded_rectangle([cx-22, cy-12, cx+22, cy+12], radius=4, fill=DARK_GREEN, outline=(255, 255, 255), width=2)
     for px in (cx-34, cx-12, cx+12, cx+34):
@@ -86,7 +86,7 @@ def vis_ship(x, y, w, band_h):
     d.polygon([(x+140, y+66), (x+330, y+66), (x+302, y+90), (x+168, y+90)], fill=(255, 255, 255))
     d.polygon([(x+217, y+26), (x+252, y+38), (x+217, y+48)], fill=(239, 68, 68))
     for wx in (x+36, x+356):
-        d.arc([wx, y+82, wx+64, y+104], 180, 360, fill=(147, 197, 253), width=4)
+        d.arc([wx, y+74, wx+64, y+88], 180, 360, fill=(147, 197, 253), width=4)
 
 def vis_gaza(x, y, w, band_h):
     # buildings along the bottom of a 48px band; sun top-right
@@ -99,16 +99,16 @@ def vis_iran(x, y, w, band_h):
     d.polygon([(x+150, y+28), (x+330, y+28), (x+310, y+44), (x+170, y+44)], fill=(255, 255, 255))
     d.rectangle([x+225, y+14, x+255, y+28], fill=(255, 255, 255))
 
-# lead row h=250, band=100
-panel_visual(36, 156, 466, 250, 100, DARK_GREEN, "TECH  •  MARKETS", "Nvidia brings back Huang",
-             "Shares jump 31% in a day. S&P 500 +4.73% after Trump pressure.", GREEN, vis_nvidia, hs=29, hl=34, ss=17, sl=22)
-panel_visual(522, 156, 466, 250, 100, DARK_BLUE, "CONFLICT  •  LIBYA", "Ukraine sinks Russian warship off Libya",
-             "Seven naval drones hit the corvette Merkury at Benghazi. UN calls for a probe.", BLUE, vis_ship, hs=29, hl=34, ss=17, sl=22)
-# second row h=180, band=48, smaller type
-panel_visual(36, 426, 466, 180, 48, DARK_RED, "GAZA", "Israeli strikes kill Hamas security chief in Gaza",
-             "Naeem Abu Nahel among 7 killed. A UNRWA worker was killed a day earlier.", RED, vis_gaza, hs=26, hl=31, ss=15, sl=20)
-panel_visual(522, 426, 466, 180, 48, DARK_TEAL, "IRAN  •  GULF", "US blockade, Hormuz mines",
-             "Iran vows to confront the blockade. Three tankers hit mines in Hormuz.", TEAL, vis_iran, hs=26, hl=31, ss=15, sl=20)
+# lead row h=230, band=90
+panel_visual(36, 156, 466, 230, 90, DARK_GREEN, "TECH  •  MARKETS", "Nvidia brings back Huang",
+             "Shares jump 31% in a day. S&P 500 +4.73% after Trump pressure.", GREEN, vis_nvidia, hs=27, hl=32, ss=15, sl=20)
+panel_visual(522, 156, 466, 230, 90, DARK_BLUE, "CONFLICT  •  LIBYA", "Ukraine sinks Russian warship off Libya",
+             "Seven naval drones hit the corvette Merkury at Benghazi. UN calls for a probe.", BLUE, vis_ship, hs=27, hl=32, ss=15, sl=20)
+# second row h=170, band=44, smaller type
+panel_visual(36, 402, 466, 170, 44, DARK_RED, "GAZA", "Israeli strikes kill Hamas security chief in Gaza",
+             "Naeem Abu Nahel among 7 killed. A UNRWA worker was killed a day earlier.", RED, vis_gaza, hs=24, hl=29, ss=14, sl=19)
+panel_visual(522, 402, 466, 170, 44, DARK_TEAL, "IRAN  •  GULF", "US blockade, Hormuz mines",
+             "Iran vows to confront the blockade. Three tankers hit mines in Hormuz.", TEAL, vis_iran, hs=24, hl=29, ss=14, sl=19)
 
 # small cards 3 x 2
 cards = [
@@ -119,20 +119,31 @@ cards = [
     ("INDONESIA", "Factory fire in Banten kills 26", "Dozens missing after a fire at a factory in Banten.", GOLD, "!"),
     ("WORLD", "Nepal quake; Pakistan astronaut", "5.6 quake near China. Zeeshan Ali to join China's Tiangong station.", TEAL, "✦"),
 ]
-cw, ch, gap = 304, 138, 16
+cw, ch, gap = 304, 128, 16
 for i, (kick, head, sub, col, mark) in enumerate(cards):
     x = 36 + (i % 3) * (cw + gap)
-    y = 626 + (i // 3) * (ch + gap)
+    y = 588 + (i // 3) * (ch + gap)
     d.rounded_rectangle([x, y, x+cw, y+ch], radius=8, fill=CARD, outline=LINE, width=2)
     d.ellipse([x+cw-38, y+10, x+cw-12, y+36], fill=col)
     d.text((x+cw-25, y+12), mark, font=font(SANS_B, 14), fill=(255, 255, 255), anchor="ma")
     d.text((x+12, y+10), kick, font=font(SANS_B, 13), fill=col)
-    yy = draw_lines(d, wrap(d, head, font(SERIF_B, 19), cw-24), x+12, y+34, font(SERIF_B, 19), INK, 23)
-    draw_lines(d, wrap(d, sub, font(SANS, 14), cw-24), x+12, yy+4, font(SANS, 14), MUTED, 18)
-    d.line([(x+12, y+ch-12), (x+cw-12, y+ch-12)], fill=col, width=3)
+    yy = draw_lines(d, wrap(d, head, font(SERIF_B, 18), cw-24), x+12, y+34, font(SERIF_B, 18), INK, 22)
+    draw_lines(d, wrap(d, sub, font(SANS, 13), cw-24), x+12, yy+4, font(SANS, 13), MUTED, 17)
+    d.line([(x+12, y+ch-8), (x+cw-12, y+ch-8)], fill=col, width=3)
 
-d.line([(48, 934), (976, 934)], fill=LINE, width=2)
-d.text((512, 946), "24 NOVEMBER 2026  —  NVIDIA  •  UKRAINE  •  GAZA  •  IRAN  •  ROHINGYA  •  AI  •  CLIMATE", font=font(SANS_B, 14), fill=MUTED, anchor="ma")
+# ALSO TODAY strip: 8 more stories, one legible line each, 2 columns
+d.rounded_rectangle([36, 876, 988, 996], radius=10, fill=CARD, outline=LINE, width=2)
+d.text((52, 886), "ALSO TODAY", font=font(SANS_B, 14), fill=RED)
+also = [
+    ("Zaporizhzhia hit: 2 killed, 40 hurt", "Democrats take US House in landslide"),
+    ("Russian deaths pass 700,000", "Spain amnesties Puigdemont"),
+    ("Zelensky urges NATO to admit Ukraine", "Mexico to try 'El Chapo Isidro'"),
+    ("Russia warns Estonia over war brink", "Car bomb in Villavicencio, Colombia"),
+]
+for r, (left, right) in enumerate(also):
+    yy = 912 + r * 21
+    d.text((52, yy), "•  " + left, font=font(SANS, 15), fill=INK)
+    d.text((522, yy), "•  " + right, font=font(SANS, 15), fill=INK)
 
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "entry.png")
 img.save(out, "PNG", optimize=True)
